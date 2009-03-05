@@ -1,0 +1,2 @@
+content hocr-edit chrome/content/
+overlay chrome://browser/content/browser.xul chrome://hocr-edit/content/browser-overlay.xul
