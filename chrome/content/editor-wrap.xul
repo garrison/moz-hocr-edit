@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE window [
+<!ENTITY % editorwrapDTD SYSTEM "chrome://hocr-edit/locale/editor-wrap.dtd" >
+%editorwrapDTD;
+]>
+
+<window id="editor-wrap"
+        onload="Startup()" onunload="Shutdown()" onclose="return WindowIsClosing();"
+        orient="vertical"
+        title="&window.title;"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script src="chrome://hocr-edit/content/editor-wrap.js"/>
+  <iframe id="editor" src="chrome://hocr-edit/content/editor.xhtml" flex="1"/>
+  <splitter/>
+  <iframe id="preview"/>
+</window>

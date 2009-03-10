@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<window id="sample"
-         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <iframe id="preview" flex="1"/>
-</window>
