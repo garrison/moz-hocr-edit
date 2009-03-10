@@ -4,12 +4,12 @@
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-    <em:id>firefox-hocr-edit@jimgarrison.org</em:id>
+    <em:id>moz-hocr-edit@jimgarrison.org</em:id>
     <em:version>0.1pre</em:version>
     <em:type>2</em:type>
    
     <!-- Target Application this extension can install into, 
-         with minimum and maximum supported versions. --> 
+         with minimum and maximum supported versions. -->
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
@@ -22,6 +22,6 @@
     <em:name>hOCR editor</em:name>
     <em:description>Extension for editing hOCR documents</em:description>
     <em:creator>Jim Garrison</em:creator>
-    <em:homepageURL>http://www.example.com/</em:homepageURL>
-  </Description>      
+    <em:homepageURL>http://jimgarrison.org/moz-hocr-edit</em:homepageURL>
+  </Description>
 </RDF>

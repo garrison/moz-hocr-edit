@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+from os import unlink
+from subprocess import Popen, PIPE
+import xml.etree.ElementTree as etree
+
+def run_command(cmd):
+    return Popen(cmd, stdout=PIPE, shell=True).communicate()[0]
+
+# Make sure there are no uncommitted changes
+if run_command("git diff HEAD") != "":
+    raise Exception("You must commit all changes before running this program.")
+
+# Generate manifest
+manifest = run_command(['git ls-tree -r --name-only HEAD'])
+manifest = manifest.splitlines()
+
+# Determine version from install.rdf
+NS = "http://www.mozilla.org/2004/em-rdf#"
+with file("install.rdf") as f:
+    root = etree.parse(f).getroot()
+    package = root.find(".//{%s}id" % NS).text.partition('@')[0]
+    version = root.find(".//{%s}version" % NS).text
+    del root
+
+# Create xpi file
+filename = "%s-%s.xpi" % (package, version)
+try:
+    unlink(filename)
+except OSError:
+    pass
+run_command("zip %s %s" % (filename, ' '.join(manifest)))

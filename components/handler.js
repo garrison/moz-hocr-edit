@@ -39,7 +39,7 @@ EditHOCRProtocolHandler.prototype = {
 //      throw Components.results.NS_ERROR_MALFORMED_URI;
 //    }
     // fixme: make sure the inner uri has a "file" scheme
-    var new_uri = ios.newURI("chrome://hocr-edit/content/editor.html", null, null);
+    var new_uri = ios.newURI("chrome://hocr-edit/content/editor.xul", null, null);
     var channel = ios.newChannelFromURI(new_uri);
     channel.originalURI = uri;
     return channel;
