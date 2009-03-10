@@ -12,8 +12,10 @@ if run_command("git diff HEAD") != "":
     raise Exception("You must commit all changes before running this program.")
 
 # Generate manifest
+ignored_files = ("make-dist", ".gitignore")
 manifest = run_command(['git ls-tree -r --name-only HEAD'])
-manifest = manifest.splitlines()
+manifest = [filename for filename in manifest.splitlines()
+            if filename not in ignored_files]
 
 # Determine version from install.rdf
 NS = "http://www.mozilla.org/2004/em-rdf#"
