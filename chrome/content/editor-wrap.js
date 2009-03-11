@@ -6,7 +6,9 @@ function Startup() {
   var url = spec.substring(spec.indexOf(':') + 1);
 
   preview.setAttribute("src", url);
-  editor.contentWindow.preview = preview.contentDocument;
+  // fixme: wait for both frames to finish loading somehow (or at least the preview frame)
+  alert("delay of game");
+  editor.contentWindow.wrappedJSObject.preview = preview.contentDocument.wrappedJSObject;
 }
 
 function Shutdown() {

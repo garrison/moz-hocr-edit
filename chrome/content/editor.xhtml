@@ -7,8 +7,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>HOCR Editor</title>
+<script type="application/javascript" src="chrome://hocr-edit/content/jquery.js"/>
+<script type="application/javascript" src="chrome://hocr-edit/content/editor.js"/>
 </head>
 <body>
-<a href="javascript:alert(preview.location);">&saveButton.label;</a>
+<a href="javascript:do_things();">Load</a>
+<ul id="lines">
+</ul>
+<img id="full_image"/>
 </body>
 </html>
