@@ -15,7 +15,8 @@ if run_command("git diff HEAD") != "":
 ignored_files = ("make-dist", ".gitignore")
 manifest = run_command(['git ls-tree -r --name-only HEAD'])
 manifest = [filename for filename in manifest.splitlines()
-            if filename not in ignored_files]
+            if filename not in ignored_files
+            and not filename.startswith("test-documents")]
 
 # Determine version from install.rdf
 NS = "http://www.mozilla.org/2004/em-rdf#"
