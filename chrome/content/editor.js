@@ -67,9 +67,11 @@ function do_things() {
   for (var i in lines) {
     var line = lines[i];
     var bbox = extract_data(line).bbox.split(" ", 4);
-    var whitespace_suffix = line.innerHTML.match(/(\s)+$/)[0];
+    var whitespace_suffix = line.innerHTML.match(/(\s)+$/);
+    if (whitespace_suffix)
+      whitespace_suffix = whitespace_suffix[0];
     // fixme: what about text at the end of the span node? (or whitespace prefix in the next element)
-    var new_same_word = $('<input type="checkbox" name="test" value="' + i +'"/>');
+    var new_same_word = $('<input type="checkbox"/>');
     new_same_word[0].checked = !whitespace_suffix;
     var new_input = $('<input size="60"/>');
     new_input.val(strip(line.innerHTML));
