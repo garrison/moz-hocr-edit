@@ -98,4 +98,5 @@ function save() {
   output_stream.init(file, -1, -1, null);
   var serializer = new XMLSerializer(); // (public version of nsIDOMSerializer)
   serializer.serializeToStream(preview, output_stream, "UTF-8");
+  // fixme: it would be nice to have a trailing newline at the end of the file
 }
