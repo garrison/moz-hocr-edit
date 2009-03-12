@@ -94,6 +94,20 @@ function load_interface() {
 function save() {
   var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   file.initWithPath("/tmp/hocr-edit.html");
+  save_file(file);
+}
+
+function save_as() {
+  const nsIFilePicker = Components.interfaces.nsIFilePicker;
+  var file_chooser = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+  file_chooser.init(window, "Saving hOCR document", nsIFilePicker.modeSave);
+  var status = file_chooser.show();
+  if (status == nsIFilePicker.returnOK) {
+    save_file(file_chooser.file);
+  }
+}
+
+function save_file(file) {
   var output_stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   output_stream.init(file, -1, -1, null);
   var serializer = new XMLSerializer(); // (public version of nsIDOMSerializer)
