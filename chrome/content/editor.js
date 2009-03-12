@@ -19,11 +19,6 @@ function evaluateXPath(aNode, aExpr) {
   return found;
 }
 
-$(function () {
-    lines = evaluateXPath(preview, "//*[@class='ocr_line']");
-    alert(lines);
-});
-
 function strip(str) {
   str = str.replace(/^\s+/g, "");
   return str.replace(/\s+$/g, "");
@@ -49,6 +44,14 @@ function extract_data(node) {
   return retval;
 }
 
+function create_change_func(line, input_element, same_word_element, whitespace_suffix) {
+  if (!whitespace_suffix)
+    whitespace_suffix = "\n";
+  return function () {
+    line.innerHTML = input_element.val() + (same_word_element[0].checked ? "" : whitespace_suffix);
+  };
+}
+
 function do_things() {
   // figure out page and set image
   var pages = evaluateXPath(preview, "//*[@class='ocr_page']");
@@ -63,10 +66,17 @@ function do_things() {
   var lines = evaluateXPath(page, "//*[@class='ocr_line']");
   for (var i in lines) {
     var line = lines[i];
-    var new_input = $('<input size="60"/>');
-    new_input.attr("value", line.innerHTML);
-    var new_img_span = $(cropped_image_span).clone();
     var bbox = extract_data(line).bbox.split(" ", 4);
+    var whitespace_suffix = line.innerHTML.match(/(\s)+$/)[0];
+    // fixme: what about text at the end of the span node? (or whitespace prefix in the next element)
+    var new_same_word = $('<input type="checkbox" name="test" value="' + i +'"/>');
+    new_same_word[0].checked = !whitespace_suffix;
+    var new_input = $('<input size="60"/>');
+    new_input.val(strip(line.innerHTML));
+    var change_func = create_change_func(line, new_input, new_same_word, whitespace_suffix)
+    new_same_word.change(change_func);
+    new_input[0].onchange = new_input[0].onkeyup = new_input[0].onkeypress = new_input[0].ondrop = change_func;
+    var new_img_span = $(cropped_image_span).clone();
     new_img_span.width(bbox[2] - bbox[0]);
     new_img_span.height(bbox[3] - bbox[1]);
     new_img_span.css("background-position", "-" + bbox[0] + "px -" + bbox[1] + "px");
@@ -74,6 +84,19 @@ function do_things() {
     new_li.append(new_img_span);
     new_li.append("<br/>");
     new_li.append(new_input);
+    new_li.append(new_same_word);
     $("#lines").append(new_li);
   }
+}
+
+function save() {
+  var s = new XMLSerializer();
+  var stream = {
+    close: function() {},
+    flush: function() {},
+    write: function(string, count) {
+      alert("'" + string + "'\n bytes count: " + count + "");
+    }
+  };
+  s.serializeToStream(preview, stream, "UTF-8");
 }
