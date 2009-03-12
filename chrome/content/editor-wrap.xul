@@ -13,5 +13,5 @@
   <script src="chrome://hocr-edit/content/editor-wrap.js"/>
   <iframe id="editor" src="chrome://hocr-edit/content/editor.xhtml" flex="1"/>
   <splitter/>
-  <iframe id="preview"/>
+  <iframe id="preview" type="content"/>
 </window>
