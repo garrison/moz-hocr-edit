@@ -9,6 +9,7 @@ function Startup() {
   // fixme: wait for both frames to finish loading somehow (or at least the preview frame)
   alert("delay of game");
   editor.contentWindow.wrappedJSObject.preview = preview.contentDocument.wrappedJSObject;
+  editor.contentWindow.wrappedJSObject.load_interface();
 }
 
 function Shutdown() {

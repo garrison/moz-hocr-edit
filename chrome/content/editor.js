@@ -52,7 +52,7 @@ function create_change_func(line, input_element, same_word_element, whitespace_s
   };
 }
 
-function do_things() {
+function load_interface() {
   // figure out page and set image
   var pages = evaluateXPath(preview, "//*[@class='ocr_page']");
   var page = pages[0];
