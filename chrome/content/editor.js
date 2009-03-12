@@ -92,13 +92,10 @@ function do_things() {
 }
 
 function save() {
-  var s = new XMLSerializer();
-  var stream = {
-    close: function() {},
-    flush: function() {},
-    write: function(string, count) {
-      alert("'" + string + "'\n bytes count: " + count + "");
-    }
-  };
-  s.serializeToStream(preview, stream, "UTF-8");
+  var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  file.initWithPath("/tmp/hocr-edit.html");
+  var output_stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+  output_stream.init(file, -1, -1, null);
+  var serializer = new XMLSerializer(); // (public version of nsIDOMSerializer)
+  serializer.serializeToStream(preview, output_stream, "UTF-8");
 }
