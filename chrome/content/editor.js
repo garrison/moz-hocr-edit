@@ -37,7 +37,7 @@ function relative_url(url, base) {
   return ios.newURI(url + "", null, baseURI).spec; // fixme: we may need a character encoding here
 }
 
-function extract_data(node) {
+function extract_hocr_data(node) {
   var retval = {};
 
   var a = node.title.split(';');
@@ -62,7 +62,7 @@ function load_interface() {
   // figure out page and set image
   var pages = evaluateXPath(preview, "//*[@class='ocr_page']");
   var page = pages[0];
-  var data = extract_data(page);
+  var data = extract_hocr_data(page);
   var full_image_url = relative_url(data.image, preview.baseURI);
   document.getElementById("full_image").setAttribute("src", full_image_url);
   var cropped_image_span = $('<span style="display: block; background-repeat: no-repeat;"></span>');
@@ -72,7 +72,7 @@ function load_interface() {
   var lines = evaluateXPath(page, "//*[@class='ocr_line']");
   for (var i in lines) {
     var line = lines[i];
-    var bbox = extract_data(line).bbox.split(" ", 4);
+    var bbox = extract_hocr_data(line).bbox.split(" ", 4);
     var whitespace_suffix = line.innerHTML.match(/(\s)+$/);
     if (whitespace_suffix)
       whitespace_suffix = whitespace_suffix[0];
