@@ -11,7 +11,7 @@
         title="&window.title;"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="chrome://hocr-edit/content/editor-wrap.js"/>
-  <iframe id="editor" src="chrome://hocr-edit/content/editor.xhtml" flex="1"/>
+  <iframe id="editor" src="chrome://hocr-edit/content/editor.xhtml" flex="2"/>
   <splitter/> <!-- ideally we would persist the splitter's position, but I haven't figured out a way to make it work -->
-  <iframe id="preview" type="content"/>
+  <iframe id="preview" type="content" flex="1"/>
 </window>
