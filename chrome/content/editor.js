@@ -101,6 +101,9 @@ function save_as() {
   const nsIFilePicker = Components.interfaces.nsIFilePicker;
   var file_chooser = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
   file_chooser.init(window, "Saving hOCR document", nsIFilePicker.modeSave);
+  file_chooser.appendFilters(nsIFilePicker.filterHTML);
+  file_chooser.appendFilters(nsIFilePicker.filterAll);
+  file_chooser.defaultString = "output.html";
   var status = file_chooser.show();
   if (status == nsIFilePicker.returnOK) {
     save_file(file_chooser.file);
