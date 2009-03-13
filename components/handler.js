@@ -34,11 +34,17 @@ EditHOCRProtocolHandler.prototype = {
   newChannel: function (uri) {
     var ios = Components.classes["@mozilla.org/network/io-service;1"]
 		.getService(Components.interfaces.nsIIOService);
-//    var colon_index = uri.asciiSpec.indexOf(":");
-//    if (colon_index < 0) {
-//      throw Components.results.NS_ERROR_MALFORMED_URI;
-//    }
-    // fixme: make sure the inner uri has a "file" scheme
+
+    // make sure it is a file: uri
+    var colon_index = uri.asciiSpec.indexOf(":");
+    if (colon_index < 0) {
+      throw Components.results.NS_ERROR_MALFORMED_URI;
+    }
+    var inner_uri = uri.asciiSpec.substring(colon_index + 1);
+    if (inner_uri.indexOf("file:") != 0)
+      throw "hocr-edit only works with file: URIs at this time.";
+
+    // fire up the editor
     var new_uri = ios.newURI("chrome://hocr-edit/content/editor-wrap.xul", null, null);
     var channel = ios.newChannelFromURI(new_uri);
     channel.originalURI = uri;
