@@ -1,5 +1,7 @@
 var preview = null;
 
+const pref_manager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+
 // Evaluate an XPath expression aExpression against a given DOM node
 // or Document object (aNode), returning the results as an array
 // thanks wanderingstan at morethanwarm dot mail dot com for the
@@ -117,7 +119,7 @@ function save_as() {
 function save_file(file) {
   var output_stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   output_stream.init(file, -1, -1, null);
-  if (!is_xhtml())
+  if (!is_xhtml() && !pref_manager.getBoolPref("extensions.hocr-edit.disable_tagsoup_output_filter"))
     output_stream = tag_soup_output_filter(output_stream);
   var serializer = new XMLSerializer(); // (public version of nsIDOMSerializer)
   serializer.serializeToStream(preview, output_stream, "US-ASCII");
