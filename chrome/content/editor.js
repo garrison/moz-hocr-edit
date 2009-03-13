@@ -114,7 +114,7 @@ function save_file(file) {
   var output_stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   output_stream.init(file, -1, -1, null);
   var serializer = new XMLSerializer(); // (public version of nsIDOMSerializer)
-  serializer.serializeToStream(preview, output_stream, "");
+  serializer.serializeToStream(preview, output_stream, "US-ASCII");
   output_stream.write("\n", 1); // trailing newline
   output_stream.flush();
   output_stream.close();
