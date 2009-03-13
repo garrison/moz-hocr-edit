@@ -138,6 +138,7 @@ function tag_soup_output_filter(output_stream) {
       if (data.length != length)
         throw "Data length mismatch";
       output_buffer = output_buffer + data;
+      return length;
     },
     flush: function () {},
     close: function () {
