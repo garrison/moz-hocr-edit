@@ -117,9 +117,38 @@ function save_as() {
 function save_file(file) {
   var output_stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   output_stream.init(file, -1, -1, null);
+  if (!is_xhtml())
+    output_stream = tag_soup_output_filter(output_stream);
   var serializer = new XMLSerializer(); // (public version of nsIDOMSerializer)
   serializer.serializeToStream(preview, output_stream, "US-ASCII");
   output_stream.write("\n", 1); // trailing newline
   output_stream.flush();
   output_stream.close();
+}
+
+function tag_soup_output_filter(output_stream) {
+  // The tag soup parser converts the name of each HTML element to uppercase
+  // (e.g. <BODY>, <P>).  We use a regular expression to convert the
+  // the tag names to lowercase in the serialized output.
+  var output_buffer = "";
+  var still_open = true;
+  var new_stream = {
+    write: function (data, length) {
+      if (data.length != length)
+        throw "Data length mismatch";
+      output_buffer = output_buffer + data;
+    },
+    flush: function () {},
+    close: function () {
+      if (!still_open)
+        throw "Can't close twice";
+      function to_lower(match) { return match.toLowerCase(); }
+      output_buffer = output_buffer.replace(/(\<\/?[A-Z]*)/g, to_lower);
+      output_stream.write(output_buffer, output_buffer.length);
+      output_stream.flush();
+      output_stream.close();
+      still_open = false;
+    }
+  };
+  return new_stream;
 }
