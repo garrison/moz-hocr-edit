@@ -28,6 +28,9 @@ function strip(str) {
 }
 
 function is_xhtml() {
+  // Returns true if the document was parsed with the XML parser, false
+  // if parsed with the tag soup parser.  See details at
+  // https://developer.mozilla.org/en/Mozilla_Web_Developer_FAQ
   return (preview.contentType == "application/xhtml+xml");
 }
 
