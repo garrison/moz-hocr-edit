@@ -1,5 +1,6 @@
 var preview = null;
 
+const ios = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
 const pref_manager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 
 // Evaluate an XPath expression aExpression against a given DOM node
@@ -31,8 +32,6 @@ function is_xhtml() {
 }
 
 function relative_url(url, base) {
-  var ios = Components.classes["@mozilla.org/network/io-service;1"]
-    .getService(Components.interfaces.nsIIOService);
   var baseURI = ios.newURI(base, null, null);
   return ios.newURI(url + "", null, baseURI).spec; // fixme: we may need a character encoding here
 }
@@ -98,8 +97,8 @@ function load_interface() {
 }
 
 function save() {
-  var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  file.initWithPath("/tmp/hocr-edit.html");
+  var file_url = ios.newURI(preview.baseURI, null, null).QueryInterface(Components.interfaces.nsIFileURL);
+  var file = file_url.file.QueryInterface(Components.interfaces.nsILocalFile);
   save_file(file);
 }
 
