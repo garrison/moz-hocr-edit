@@ -24,6 +24,10 @@ function strip(str) {
   return str.replace(/\s+$/g, "");
 }
 
+function is_xhtml() {
+  return (preview.contentType == "application/xhtml+xml");
+}
+
 function relative_url(url, base) {
   var ios = Components.classes["@mozilla.org/network/io-service;1"]
     .getService(Components.interfaces.nsIIOService);
@@ -103,7 +107,7 @@ function save_as() {
   file_chooser.init(window, "Saving hOCR document", nsIFilePicker.modeSave);
   file_chooser.appendFilters(nsIFilePicker.filterHTML);
   file_chooser.appendFilters(nsIFilePicker.filterAll);
-  file_chooser.defaultString = "output.html";
+  file_chooser.defaultString = "output" + (is_xhtml() ? ".xhtml" : ".html");
   var status = file_chooser.show();
   if (status == nsIFilePicker.returnOK) {
     save_file(file_chooser.file);
