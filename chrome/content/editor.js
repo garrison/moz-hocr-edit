@@ -109,7 +109,7 @@ function save_as() {
   file_chooser.appendFilters(nsIFilePicker.filterAll);
   file_chooser.defaultString = "output" + (is_xhtml() ? ".xhtml" : ".html");
   var status = file_chooser.show();
-  if (status == nsIFilePicker.returnOK) {
+  if (status != nsIFilePicker.returnCancel) {
     save_file(file_chooser.file);
   }
 }
