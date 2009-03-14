@@ -107,7 +107,7 @@ function create_change_func(line, input_element, same_word_element, whitespace_s
 
 function load_interface() {
   // figure out page and set image
-  var pages = evaluateXPath(preview, "//*[@class='ocr_page']");
+  var pages = evaluateXPath(preview, "//*[contains(@class,'ocr_page')]");
   var page = pages[0];
   var data = extract_hocr_data(page);
   var full_image_url = relative_url(data.image, preview.baseURI);
@@ -116,7 +116,7 @@ function load_interface() {
   cropped_image_span.css("background-image", "url(" + full_image_url + ")");
 
   // figure out lines
-  var lines = evaluateXPath(page, "//*[@class='ocr_line']");
+  var lines = evaluateXPath(page, "//*[contains(@class,'ocr_line')]");
   for (var i in lines) {
     var line = lines[i];
     var bbox = extract_hocr_data(line).bbox.split(" ", 4);
