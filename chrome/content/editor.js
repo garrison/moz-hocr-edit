@@ -47,8 +47,9 @@ function extract_hocr_data(node) {
   var a = node.title.split(';');
   for (var i in a) {
     var d = strip(a[i]);
-    var first_space = d.indexOf(" "); // fixme: this may not exist
-    retval[d.substring(0, first_space)] = d.substring(first_space + 1);
+    var first_space = d.indexOf(" ");
+    if (first_space != -1)
+      retval[d.substring(0, first_space)] = d.substring(first_space + 1);
   }
 
   return retval;
