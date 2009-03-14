@@ -130,7 +130,10 @@ function load_interface() {
     new_input.val(strip(line.innerHTML));
     var change_func = create_change_func(line, new_input, new_same_word, whitespace_suffix)
     new_same_word.change(change_func);
-    new_input[0].onchange = new_input[0].onkeyup = new_input[0].onkeypress = new_input[0].ondrop = change_func;
+    new_input[0].onkeyup = change_func;
+    new_input[0].onkeypress = change_func;
+    new_input[0].ondrop = change_func;
+    new_input[0].onchange = function () { change_func(); unhighlight(); }
     var new_img_span = $(cropped_image_span).clone();
     new_img_span.width(bbox[2] - bbox[0]);
     new_img_span.height(bbox[3] - bbox[1]);
