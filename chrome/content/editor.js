@@ -105,6 +105,10 @@ function create_change_func(line, input_element, same_word_element, whitespace_s
   };
 }
 
+function create_onfocus_func(line) {
+  return function () { unhighlight(); highlight(line); };
+}
+
 function load_interface() {
   // figure out page and set image
   var pages = evaluateXPath(preview, "//*[@class='ocr_page']");
@@ -133,7 +137,9 @@ function load_interface() {
     new_input[0].onkeyup = change_func;
     new_input[0].onkeypress = change_func;
     new_input[0].ondrop = change_func;
-    new_input[0].onchange = function () { change_func(); unhighlight(); }
+    new_input[0].onchange = function () { change_func(); unhighlight(); };
+    new_input[0].onblur = unhighlight;
+    new_input[0].onfocus = create_onfocus_func(line);
     var new_img_span = $(cropped_image_span).clone();
     new_img_span.width(bbox[2] - bbox[0]);
     new_img_span.height(bbox[3] - bbox[1]);
