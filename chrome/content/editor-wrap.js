@@ -2,7 +2,7 @@ const pref_manager = Components.classes["@mozilla.org/preferences-service;1"].ge
 
 function Startup() {
   if (pref_manager.getBoolPref("extensions.hocr-edit.side_by_side_layout"))
-    document.firstChild.orient = "horizontal";
+    document.documentElement.orient = "horizontal";
 
   var preview = document.getElementById("preview");
   var editor = document.getElementById("editor")
