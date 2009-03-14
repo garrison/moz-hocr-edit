@@ -1,4 +1,6 @@
+var unwrapped_preview = null;
 var preview = null;
+var preview_window = null;
 
 const ios = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
 const pref_manager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
@@ -56,7 +58,27 @@ function create_change_func(line, input_element, same_word_element, whitespace_s
   if (!whitespace_suffix)
     whitespace_suffix = "\n";
   return function () {
-    line.innerHTML = input_element.val() + (same_word_element[0].checked ? "" : whitespace_suffix);
+    var text = input_element.val() + (same_word_element[0].checked ? "" : whitespace_suffix);
+    if (!is_xhtml()) {
+      line.innerHTML = text;
+    } else {
+      // This may not be valid XML; we need to parse it to find out.
+      // We wrap it in a container element for parsing which contains
+      // the namespace information.
+      var parser = new preview_window.DOMParser();
+      var container = parser.parseFromString('<span xmlns="http://www.w3.org/1999/xhtml">' + text + '</span>', 'application/xhtml+xml').documentElement;
+      // Unfortunately, the parser does not throw exception if it fails,
+      // but instead returns a document with a parsererror element
+      // (see mozilla bug #45566)
+      if (container.localName != 'parsererror') {
+	// well-formed
+        line.innerHTML = '';
+        for (var i = 0; i < container.childNodes.length; ++i)
+          line.appendChild(unwrapped_preview.importNode(container.childNodes[i], true));
+      } else {
+	// parse error
+      }
+    }
   };
 }
 
