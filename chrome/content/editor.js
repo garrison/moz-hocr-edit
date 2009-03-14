@@ -94,12 +94,12 @@ function create_change_func(line, input_element, same_word_element, whitespace_s
       // but instead returns a document with a parsererror element
       // (see mozilla bug #45566)
       if (container.localName != 'parsererror') {
-	// well-formed
+        // well-formed
         line.innerHTML = '';
         for (var i = 0; i < container.childNodes.length; ++i)
           line.appendChild(unwrapped_preview.importNode(container.childNodes[i], true));
       } else {
-	// parse error
+        // parse error
       }
     }
   };
