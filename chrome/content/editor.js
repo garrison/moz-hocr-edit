@@ -54,10 +54,33 @@ function extract_hocr_data(node) {
   return retval;
 }
 
+var highlighted_element = null;
+var highlighted_element_original_style = null;
+
+function highlight(element) {
+  if (highlighted_element != element) {
+    unhighlight();
+    highlighted_element = element;
+    highlighted_element_original_style = element.hasAttribute("style") ? $(element).attr("style") : null;
+    $(element).css("background-color", "#ffa");
+  }
+}
+
+function unhighlight() {
+  if (!highlighted_element)
+    return;
+  if (highlighted_element_original_style === null)
+    highlighted_element.removeAttribute("style"); // seems to work w/o removeAttributeNS
+  else
+    $(highlighted_element).attr("style", highlighted_element_original_style);
+  highlighted_element = null;
+}
+
 function create_change_func(line, input_element, same_word_element, whitespace_suffix) {
   if (!whitespace_suffix)
     whitespace_suffix = "\n";
   return function () {
+    highlight(line);
     var text = input_element.val() + (same_word_element[0].checked ? "" : whitespace_suffix);
     if (!is_xhtml()) {
       line.innerHTML = text;
@@ -141,6 +164,7 @@ function save_as() {
 }
 
 function save_file(file) {
+  unhighlight();
   var output_stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   output_stream.init(file, -1, -1, null);
   if (!is_xhtml() && !pref_manager.getBoolPref("extensions.hocr-edit.disable_tagsoup_output_filter"))
