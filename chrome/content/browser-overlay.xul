@@ -1,7 +1,22 @@
 <?xml version="1.0"?>
-<overlay id="sample" 
-         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
- <statusbar id="status-bar">
-  <statusbarpanel id="my-panel" label="hOCR"/>
- </statusbar>
+
+<!DOCTYPE overlay [
+<!ENTITY % overlayDTD SYSTEM "chrome://hocr-edit/locale/browser-overlay.dtd" >
+%overlayDTD;
+]>
+
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script src="chrome://hocr-edit/content/browser-overlay.js"/>
+
+  <popupset>
+    <menupopup id="hocr-edit-overlay-menu">
+      <menuitem label="&editThisDocument.label;" oncommand="openNewTabWith('hocr-edit:' + window.content.document.baseURI, null, null, event, false);
+"/>
+      <menuitem label="&launchEditor.label;" hidden="true" oncommand="window.openDialog('chrome://hocr-edit/content/', '', 'chrome,all,dialog=no');"/>
+    </menupopup>
+  </popupset>
+
+  <statusbar id="status-bar">
+    <statusbarpanel id="hocr-edit-panel" label="hOCR" onclick="show_popup(this, event);"/>
+  </statusbar>
 </overlay>
