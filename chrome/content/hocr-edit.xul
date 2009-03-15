@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<window id="hocr-edit-standalone"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        title="Standalone hOCR editor"
+        onload="Startup()" onunload="Shutdown()" onclose="return WindowIsClosing();"
+        screenX="4" screenY="4"
+        width="400" height="600"
+        persist="screenX screenY width height sizemode">
+  <script src="chrome://hocr-edit/content/hocr-edit.js"/>
+  <menubar>
+    <menu label="File" accesskey="F">
+      <menupopup>
+        <menuitem label="New"/>
+        <menuitem label="Open"/>
+        <menuitem label="Save"/>
+        <menuitem label="Save As..."/>
+        <menuseparator/>
+        <menuitem label="Close"/>
+      </menupopup>
+    </menu>
+  </menubar>
+  <iframe id="editor" src="about:blank" flex="1"/>
+</window>
