@@ -49,7 +49,7 @@ function is_xhtml() {
 
 function relative_url(url, base) {
   var baseURI = ios.newURI(base, null, null);
-  return ios.newURI(url + "", null, baseURI).spec; // fixme: we may need a character encoding here
+  return baseURI.resolve(url);
 }
 
 function extract_hocr_data(node) {
