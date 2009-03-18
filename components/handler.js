@@ -35,14 +35,16 @@ EditHOCRProtocolHandler.prototype = {
     var ios = Components.classes["@mozilla.org/network/io-service;1"]
 		.getService(Components.interfaces.nsIIOService);
 
-    // make sure it is a file: uri
+    // make sure it is an acceptable uri scheme
     var colon_index = uri.asciiSpec.indexOf(":");
     if (colon_index < 0) {
       throw Components.results.NS_ERROR_MALFORMED_URI;
     }
     var inner_uri = uri.asciiSpec.substring(colon_index + 1);
-    if (inner_uri.indexOf("file:") != 0)
-      throw "hocr-edit only works with file: URIs at this time.";
+    if (inner_uri.indexOf("file:") != 0 &&
+        inner_uri.indexOf("http:") != 0 &&
+        inner_uri.indexOf("https:") != 0)
+      throw "hocr-edit only works with file, http, and https URIs at this time.";
 
     // fire up the editor
     var new_uri = ios.newURI("chrome://hocr-edit/content/editor-wrap.xul", null, null);

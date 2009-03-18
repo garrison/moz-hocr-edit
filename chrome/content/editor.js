@@ -164,9 +164,14 @@ function load_interface() {
 }
 
 function save() {
-  var file_url = ios.newURI(preview.baseURI, null, null).QueryInterface(Components.interfaces.nsIFileURL);
-  var file = file_url.file.QueryInterface(Components.interfaces.nsILocalFile);
-  save_file(file);
+  var url = ios.newURI(preview.baseURI, null, null);
+  if (url.schemeIs("file")) {
+    var file_url = url.QueryInterface(Components.interfaces.nsIFileURL);
+    var file = file_url.file.QueryInterface(Components.interfaces.nsILocalFile);
+    save_file(file);
+  } else if (url.schemeIs("http") || url.schemeIs("https")) {
+    save_to_http(url);
+  }
 }
 
 function save_as() {
@@ -186,6 +191,21 @@ function save_file(file) {
   unhighlight();
   var output_stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   output_stream.init(file, -1, -1, null);
+  serialize_current_document(output_stream);
+}
+
+function save_to_http(url) { // or https, of course
+  xhr = new XMLHttpRequest();
+  xhr.open("PUT", url.spec, false);
+  xhr.setRequestHeader("Content-type", (is_xhtml() ? "application/xhtml+xml" : "text/html"));
+  function serialized_cb(buffer) {
+    xhr.send(buffer);
+    alert("HTTP status code: " + xhr.status);
+  }
+  serialize_current_document(stream_to_memory(serialized_cb));
+}
+
+function serialize_current_document(output_stream) {
   if (!is_xhtml() && !pref_manager.getBoolPref("extensions.hocr-edit.disable_tagsoup_output_filter"))
     output_stream = tag_soup_output_filter(output_stream);
   var serializer = new XMLSerializer(); // (public version of nsIDOMSerializer)
@@ -199,9 +219,20 @@ function tag_soup_output_filter(output_stream) {
   // The tag soup parser converts the name of each HTML element to uppercase
   // (e.g. <BODY>, <P>).  We use a regular expression to convert the
   // the tag names to lowercase in the serialized output.
+  function serialized_cb(output_buffer) {
+    function to_lower(match) { return match.toLowerCase(); }
+    output_buffer = output_buffer.replace(/(\<\/?[A-Z]*)/g, to_lower);
+    output_stream.write(output_buffer, output_buffer.length);
+    output_stream.flush();
+    output_stream.close();
+  }
+  return stream_to_memory(serialized_cb);
+}
+
+function stream_to_memory(close_cb_function) {
   var output_buffer = "";
   var still_open = true;
-  var new_stream = {
+  var stream = {
     write: function (data, length) {
       if (data.length != length)
         throw "Data length mismatch";
@@ -212,13 +243,9 @@ function tag_soup_output_filter(output_stream) {
     close: function () {
       if (!still_open)
         throw "Can't close twice";
-      function to_lower(match) { return match.toLowerCase(); }
-      output_buffer = output_buffer.replace(/(\<\/?[A-Z]*)/g, to_lower);
-      output_stream.write(output_buffer, output_buffer.length);
-      output_stream.flush();
-      output_stream.close();
       still_open = false;
+      close_cb_function(output_buffer);
     }
   };
-  return new_stream;
+  return stream;
 }
