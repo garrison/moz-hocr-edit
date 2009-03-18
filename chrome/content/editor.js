@@ -188,7 +188,6 @@ function save_as() {
 }
 
 function save_file(file) {
-  unhighlight();
   var output_stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   output_stream.init(file, -1, -1, null);
   serialize_current_document(output_stream);
@@ -206,6 +205,7 @@ function save_to_http(url) { // or https, of course
 }
 
 function serialize_current_document(output_stream) {
+  unhighlight();
   if (!is_xhtml() && !pref_manager.getBoolPref("extensions.hocr-edit.disable_tagsoup_output_filter"))
     output_stream = tag_soup_output_filter(output_stream);
   var serializer = new XMLSerializer(); // (public version of nsIDOMSerializer)
