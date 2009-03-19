@@ -21,7 +21,9 @@
     <!-- Front End MetaData -->
     <em:name>hOCR editor</em:name>
     <em:description>Extension for editing hOCR documents</em:description>
-    <em:creator>Jim Garrison</em:creator>
     <em:homepageURL>http://jimgarrison.org/moz-hocr-edit</em:homepageURL>
+    <em:creator>Jim Garrison</em:creator>
+    <em:contributor>Eben Moglen</em:contributor>
+    <em:contributor>Ian Sullivan</em:contributor>
   </Description>
 </RDF>
