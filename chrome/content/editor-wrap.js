@@ -12,6 +12,7 @@ function Startup() {
 
   // ideally, we would have a way to disable the document's own javascript, in cases where it exists
   preview.onload = function () {
+    editor.contentWindow.wrappedJSObject.notification_box = document.getElementById("notification-box");
     editor.contentWindow.wrappedJSObject.preview = preview.contentDocument.wrappedJSObject;
     editor.contentWindow.wrappedJSObject.unwrapped_preview = preview.contentDocument;
     editor.contentWindow.wrappedJSObject.preview_window = preview.contentWindow;

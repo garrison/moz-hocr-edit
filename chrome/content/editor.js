@@ -1,6 +1,8 @@
+// these variables are set by editor-wrap.js
 var unwrapped_preview = null;
 var preview = null;
 var preview_window = null;
+var notification_box = null;
 
 const ios = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
 const pref_manager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
@@ -163,6 +165,17 @@ function load_interface() {
   }
 }
 
+function save_notification_wrapper(save_func) {
+  return function () {
+    try {
+      save_func();
+      notification_box.appendNotification("Saved successfully", "save-success", null, notification_box.PRIORITY_INFO_LOW, null);
+    } catch (e) {
+      notification_box.appendNotification(e + "", "save-failure", null, notification_box.PRIORITY_WARNING_MEDIUM, null);
+    }
+  };
+}
+
 function save() {
   var url = ios.newURI(preview.baseURI, null, null);
   if (url.schemeIs("file")) {
@@ -173,6 +186,8 @@ function save() {
     save_to_http(url);
   }
 }
+
+save = save_notification_wrapper(save);
 
 function save_as() {
   const nsIFilePicker = Components.interfaces.nsIFilePicker;
@@ -187,6 +202,8 @@ function save_as() {
   }
 }
 
+save_as = save_notification_wrapper(save_as);
+
 function save_file(file) {
   var output_stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   output_stream.init(file, -1, -1, null);
@@ -199,7 +216,8 @@ function save_to_http(url) { // or https, of course
   xhr.setRequestHeader("Content-type", (is_xhtml() ? "application/xhtml+xml" : "text/html"));
   function serialized_cb(buffer) {
     xhr.send(buffer);
-    alert("HTTP status code: " + xhr.status);
+    if (xhr.status < 200 || xhr.status >= 300)
+      throw "Save failed: HTTP status code " + xhr.status;
   }
   serialize_current_document(stream_to_memory(serialized_cb));
 }
