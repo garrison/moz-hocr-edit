@@ -16,7 +16,7 @@ EditHOCRProtocolHandler.prototype = {
 
   scheme: HOCR_EDIT,
   defaultPort: -1,
-  protocolFlags: Components.interfaces.nsIProtocolHandler.URI_IS_LOCAL_FILE | Components.interfaces.nsIProtocolHandler.URI_NON_PERSISTABLE,
+  protocolFlags: Components.interfaces.nsIProtocolHandler.URI_IS_LOCAL_FILE | Components.interfaces.nsIProtocolHandler.URI_NON_PERSISTABLE | Components.interfaces.nsIProtocolHandler.URI_NORELATIVE,
   // fixme: the descriptions of protocolFlags are cryptic.  see
   // https://developer.mozilla.org/en/NsIProtocolHandler
 
