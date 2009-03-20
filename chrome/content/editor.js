@@ -37,10 +37,9 @@ function get_elements_by_class(node, class_name) {
   return retval;
 }
 
-function strip(str) {
-  str = str.replace(/^\s+/g, "");
-  return str.replace(/\s+$/g, "");
-}
+function lstrip(str) { return str.replace(/^\s+/g, ""); }
+function rstrip(str) { return str.replace(/\s+$/g, ""); }
+function strip(str) { return lstrip(rstrip(str)); }
 
 function is_xhtml() {
   // Returns true if the document was parsed with the XML parser, false
@@ -62,7 +61,9 @@ function extract_hocr_data(node) {
     var d = strip(a[i]);
     var first_space = d.indexOf(" ");
     if (first_space != -1)
-      retval[d.substring(0, first_space)] = d.substring(first_space + 1);
+      retval[d.substring(0, first_space)] = lstrip(d.substring(first_space));
+    else
+      retval[d] = null;
   }
 
   return retval;
@@ -133,7 +134,7 @@ function load_interface() {
   var lines = get_elements_by_class(page, "ocr_line");
   for (var i in lines) {
     var line = lines[i];
-    var bbox = extract_hocr_data(line).bbox.split(" ", 4);
+    var bbox = extract_hocr_data(line).bbox.split(/\s+/, 4);
     var whitespace_suffix = line.innerHTML.match(/(\s)+$/);
     if (whitespace_suffix)
       whitespace_suffix = whitespace_suffix[0];
