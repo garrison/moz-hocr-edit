@@ -231,11 +231,11 @@ function save_as() {
   file_chooser.defaultString = "output" + (is_xhtml() ? ".xhtml" : ".html");
   var status = file_chooser.show();
   if (status != nsIFilePicker.returnCancel) {
-    save_file(file_chooser.file);
+    save_notification_wrapper(function () {
+      save_file(file_chooser.file);
+    })();
   }
 }
-
-save_as = save_notification_wrapper(save_as);
 
 function save_file(file) {
   var output_stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
