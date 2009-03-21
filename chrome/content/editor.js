@@ -134,6 +134,8 @@ function load_page_interface(page) {
   // figure out image
   var data = extract_hocr_data(page);
   var full_image_url = relative_url(data.image, preview.baseURI);
+  var full_image = $('<div style="position: relative;"><img/></div>')
+  full_image[0].firstChild.setAttribute("src", full_image_url);
   var cropped_image_span = $('<span style="display: block; background-repeat: no-repeat;"></span>');
   cropped_image_span.css("background-image", "url(" + full_image_url + ")");
 
@@ -144,10 +146,14 @@ function load_page_interface(page) {
   for (var i in lines) {
     var line = lines[i];
     var bbox = extract_hocr_data(line).bbox.split(/\s+/, 4);
+    var bbox_width = bbox[2] - bbox[0];
+    var bbox_height = bbox[3] - bbox[1];
     var whitespace_suffix = line.innerHTML.match(/(\s)+$/);
     if (whitespace_suffix)
       whitespace_suffix = whitespace_suffix[0];
     // fixme: what about text at the end of the span node? (or whitespace prefix in the next element)
+
+    // create UI control
     var new_same_word = $('<input type="checkbox"/>');
     new_same_word[0].checked = !whitespace_suffix;
     var new_input = $('<input size="60"/>');
@@ -163,20 +169,26 @@ function load_page_interface(page) {
     function create_onfocus_func(line) { return function () { highlight(line); }; }
     new_input[0].onfocus = new_same_word[0].onfocus = create_onfocus_func(line);
     var new_img_span = $(cropped_image_span).clone();
-    new_img_span.width(bbox[2] - bbox[0]);
-    new_img_span.height(bbox[3] - bbox[1]);
+    new_img_span.width(bbox_width);
+    new_img_span.height(bbox_height);
     new_img_span.css("background-position", "-" + bbox[0] + "px -" + bbox[1] + "px");
-    var new_li = $("<li/>");
+    var new_li = $('<li id="line' + i + '"></li>');
     new_li.append(new_img_span);
     new_li.append("<br/>");
     new_li.append(new_input);
     new_li.append(new_same_word);
     lines_ul.append(new_li);
+
+    // create overlay over full_image
+    var overlay_span = $('<a style="position: absolute; display: block; z-index: 1;" href="#line' + i + '"></a>');
+    overlay_span.css("left", bbox[0] + 'px');
+    overlay_span.css("top", bbox[1] + 'px');
+    overlay_span.width(bbox_width);
+    overlay_span.height(bbox_height);
+    full_image.append(overlay_span);
   }
 
   // show full image
-  var full_image = $("<img/>")
-  full_image[0].setAttribute("src", full_image_url);
   $("#document").append(full_image);
 }
 
