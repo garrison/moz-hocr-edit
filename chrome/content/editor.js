@@ -121,17 +121,26 @@ function create_change_func(line, input_element, same_word_element, whitespace_s
 }
 
 function load_interface() {
-  // figure out page and set image
+  // figure out page
   var pages = get_elements_by_class(preview, "ocr_page");
-  var page = pages[0];
+  if (pages.length == 0) {
+    $("#document").append("<p>This does not appear to be an OCR document.</p>");
+    return;
+  }
+  load_page_interface(pages[0]);
+}
+
+function load_page_interface(page) {
+  // figure out image
   var data = extract_hocr_data(page);
   var full_image_url = relative_url(data.image, preview.baseURI);
-  document.getElementById("full_image").setAttribute("src", full_image_url);
   var cropped_image_span = $('<span style="display: block; background-repeat: no-repeat;"></span>');
   cropped_image_span.css("background-image", "url(" + full_image_url + ")");
 
   // figure out lines
   var lines = get_elements_by_class(page, "ocr_line");
+  var lines_ul = $("<ul></ul>");
+  $("#document").append(lines_ul);
   for (var i in lines) {
     var line = lines[i];
     var bbox = extract_hocr_data(line).bbox.split(/\s+/, 4);
@@ -162,8 +171,13 @@ function load_interface() {
     new_li.append("<br/>");
     new_li.append(new_input);
     new_li.append(new_same_word);
-    $("#lines").append(new_li);
+    lines_ul.append(new_li);
   }
+
+  // show full image
+  var full_image = $("<img/>")
+  full_image[0].setAttribute("src", full_image_url);
+  $("#document").append(full_image);
 }
 
 function save_notification_wrapper(save_func) {

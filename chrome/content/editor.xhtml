@@ -8,8 +8,8 @@
 <head>
 <title>HOCR Editor</title>
 <style type="text/css">
-#lines { list-style: none; padding-left: 0; }
-#lines li { padding: 1em 0em; border-bottom: 2px solid #800; }
+#document ul { list-style: none; padding-left: 0; }
+#document ul li { padding: 1em 0em; border-bottom: 2px solid #800; }
 </style>
 <script type="application/javascript" src="chrome://hocr-edit/content/jquery.js"/>
 <script type="application/javascript" src="chrome://hocr-edit/content/editor.js"/>
@@ -17,8 +17,7 @@
 <body>
 <a href="javascript:save();">&saveButton.label;</a>
 <a href="javascript:save_as();">&saveAsButton.label;</a>
-<ul id="lines">
-</ul>
-<img id="full_image"/>
+<div id="document">
+</div>
 </body>
 </html>
