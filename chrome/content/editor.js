@@ -7,6 +7,10 @@ var notification_box = null;
 const ios = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
 const pref_manager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 
+// i18n
+var bundle;
+function _(str) { return bundle.getString(str); }
+
 // Evaluate an XPath expression aExpression against a given DOM node
 // or Document object (aNode), returning the results as an array
 // thanks wanderingstan at morethanwarm dot mail dot com for the
@@ -121,6 +125,8 @@ function create_change_func(line, input_element, same_word_element, whitespace_s
 }
 
 function load_interface() {
+  bundle = document.getElementById("editor-bundle");
+
   // figure out page
   var pages = get_elements_by_class(preview, "ocr_page");
   if (pages.length == 0) {
@@ -196,7 +202,7 @@ function save_notification_wrapper(save_func) {
   return function () {
     try {
       save_func();
-      notification_box.appendNotification("Saved successfully", "save-success", null, notification_box.PRIORITY_INFO_LOW, null);
+      notification_box.appendNotification(_("savedSuccessfully"), "save-success", null, notification_box.PRIORITY_INFO_LOW, null);
     } catch (e) {
       notification_box.appendNotification(e + "", "save-failure", null, notification_box.PRIORITY_WARNING_MEDIUM, null);
     }
@@ -219,7 +225,7 @@ save = save_notification_wrapper(save);
 function save_as() {
   const nsIFilePicker = Components.interfaces.nsIFilePicker;
   var file_chooser = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-  file_chooser.init(window, "Saving hOCR document", nsIFilePicker.modeSave);
+  file_chooser.init(window, _("savingDocument"), nsIFilePicker.modeSave);
   file_chooser.appendFilters(nsIFilePicker.filterHTML);
   file_chooser.appendFilters(nsIFilePicker.filterAll);
   file_chooser.defaultString = "output" + (is_xhtml() ? ".xhtml" : ".html");
