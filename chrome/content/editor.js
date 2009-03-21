@@ -191,6 +191,8 @@ function load_page_interface(page) {
     overlay_span.css("top", bbox[1] + 'px');
     overlay_span.width(bbox_width);
     overlay_span.height(bbox_height);
+    overlay_span[0].onmouseover = create_onfocus_func(line);
+    overlay_span[0].onmouseout = unhighlight;
     full_image.append(overlay_span);
   }
 
