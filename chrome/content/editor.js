@@ -99,8 +99,9 @@ function create_change_func(line, input_element, same_word_element, whitespace_s
   if (!whitespace_suffix)
     whitespace_suffix = "\n";
   return function () {
-    highlight(line);
-    var text = input_element.val() + (same_word_element[0].checked ? "" : whitespace_suffix);
+    var text = input_element.val();
+    if (same_word_element && same_word_element[0].checked)
+      text += whitespace_suffix;
     if (!is_xhtml()) {
       line.innerHTML = text;
     } else {
@@ -194,6 +195,18 @@ function load_page_interface(page) {
     overlay_span[0].onmouseover = create_onfocus_func(line);
     overlay_span[0].onmouseout = unhighlight;
     full_image.append(overlay_span);
+  }
+
+  // fall back to textarea
+  if (lines.length == 0) {
+    var textarea = $('<textarea rows="30" cols="120"/>');
+    textarea.val(page.innerHTML);
+    var textarea_change_func = create_change_func(page, textarea, null, null);
+    textarea[0].onkeyup = textarea_change_func;
+    textarea[0].onkeypress = textarea_change_func;
+    textarea[0].ondrop = textarea_change_func;
+    textarea[0].onchange = textarea_change_func;
+    $("#document").append(textarea);
   }
 
   // show full image
