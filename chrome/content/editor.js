@@ -100,7 +100,7 @@ function create_change_func(line, input_element, same_word_element, whitespace_s
     whitespace_suffix = "\n";
   return function () {
     var text = input_element.val();
-    if (same_word_element && same_word_element[0].checked)
+    if (same_word_element && !same_word_element[0].checked)
       text += whitespace_suffix;
     if (!is_xhtml()) {
       line.innerHTML = text;
