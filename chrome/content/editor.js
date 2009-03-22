@@ -165,7 +165,7 @@ function load_page_interface(page) {
     new_same_word[0].checked = !whitespace_suffix;
     var new_input = $('<input size="60"/>');
     new_input.val(strip(line.innerHTML));
-    var change_func = create_change_func(line, new_input, new_same_word, whitespace_suffix)
+    var change_func = create_change_func(line, new_input, new_same_word, whitespace_suffix);
     new_same_word.change(change_func);
     new_same_word[0].onblur = unhighlight;
     new_input[0].onkeyup = change_func;
