@@ -125,6 +125,12 @@ function create_change_func(line, input_element, same_word_element, whitespace_s
   };
 }
 
+function go_to_line(i) {
+  location.hash = "line" + i;
+  var input_element = $("#line" + i + " input:text");
+  setTimeout(function () { input_element.focus(); }, 0);
+}
+
 function load_interface() {
   bundle = document.getElementById("editor-bundle");
 
@@ -187,7 +193,7 @@ function load_page_interface(page) {
     lines_ul.append(new_li);
 
     // create overlay over full_image
-    var overlay_span = $('<a style="position: absolute; display: block; z-index: 1;" href="#line' + i + '"></a>');
+    var overlay_span = $('<a style="position: absolute; display: block; z-index: 1;" href="javascript:go_to_line(' + i + ');"></a>');
     overlay_span.css("left", bbox[0] + 'px');
     overlay_span.css("top", bbox[1] + 'px');
     overlay_span.width(bbox_width);
@@ -196,6 +202,21 @@ function load_page_interface(page) {
     overlay_span[0].onmouseout = unhighlight;
     full_image.append(overlay_span);
   }
+
+  // selection handling
+  function handle_preview_selection() {
+    var sel = preview_window.getSelection()
+    if (!sel.isCollapsed) {
+      for (var i in lines) {
+	if (sel.containsNode(lines[i], true)) {
+	  go_to_line(i);
+	  break;
+	}
+      }
+    }
+  }
+  if (lines.length > 0)
+    preview_window.addEventListener('mouseup', handle_preview_selection, false);
 
   // fall back to textarea
   if (lines.length == 0) {
