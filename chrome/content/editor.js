@@ -171,7 +171,7 @@ function load_page_interface(page) {
     new_input[0].onkeyup = change_func;
     new_input[0].onkeypress = change_func;
     new_input[0].ondrop = change_func;
-    new_input[0].onchange = function () { change_func(); unhighlight(); };
+    new_input[0].onchange = change_func;
     new_input[0].onblur = unhighlight;
     function create_onfocus_func(line) { return function () { highlight(line); }; }
     new_input[0].onfocus = new_same_word[0].onfocus = create_onfocus_func(line);
