@@ -7,6 +7,8 @@ var notification_box = null;
 const ios = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
 const pref_manager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 
+var document_url = null;
+
 // i18n
 var bundle;
 function _(str) { return bundle.getString(str); }
@@ -133,6 +135,7 @@ function go_to_line(i) {
 
 function load_interface() {
   bundle = document.getElementById("editor-bundle");
+  document_url = preview.baseURI;
 
   // figure out page
   var pages = get_elements_by_class(preview, "ocr_page");
@@ -246,7 +249,7 @@ function save_notification_wrapper(save_func) {
 }
 
 function save() {
-  var url = ios.newURI(preview.baseURI, null, null);
+  var url = ios.newURI(document_url, null, null); //
   if (url.schemeIs("file")) {
     var file_url = url.QueryInterface(Components.interfaces.nsIFileURL);
     var file = file_url.file.QueryInterface(Components.interfaces.nsILocalFile);
@@ -258,7 +261,11 @@ function save() {
 
 save = save_notification_wrapper(save);
 
-function save_as() {
+function save_as(save_copy_only) {
+  // The save_copy_only argument controls future saves: if it is true, future
+  // saves will be saved to the original location before this operation.
+  // If false or unspecified, future saves will be saved over the new file
+  // selected in this function.
   const nsIFilePicker = Components.interfaces.nsIFilePicker;
   var file_chooser = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
   file_chooser.init(window, _("savingDocument"), nsIFilePicker.modeSave);
@@ -269,6 +276,8 @@ function save_as() {
   if (status != nsIFilePicker.returnCancel) {
     save_notification_wrapper(function () {
       save_file(file_chooser.file);
+      if (!save_copy_only)
+	document_url = file_chooser.fileURL.spec;
     })();
   }
 }
