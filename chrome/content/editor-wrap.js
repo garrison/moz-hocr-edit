@@ -7,10 +7,16 @@ function Startup() {
   var preview = document.getElementById("preview");
   var editor = document.getElementById("editor")
 
+  // disable unwanted features on the document preview frame
+  preview.docShell.allowPlugins = false;
+  preview.docShell.allowJavascript = false;
+  preview.docShell.allowMetaRedirects = false;
+  preview.docShell.allowSubframes = false;
+
+  // determine the url of the document
   var spec = document.location + "";
   var url = spec.substring(spec.indexOf(':') + 1);
 
-  // ideally, we would have a way to disable the document's own javascript, in cases where it exists
   preview.onload = function () {
     editor.contentWindow.wrappedJSObject.notification_box = document.getElementById("notification-box");
     editor.contentWindow.wrappedJSObject.preview = preview.contentDocument.wrappedJSObject;
