@@ -1,2 +1,3 @@
 <!ENTITY editThisDocument.label "Edit this hOCR document">
+<!ENTITY editThisImage.label "Create hOCR document from this image">
 <!ENTITY launchEditor.label "Launch standalone hOCR editor...">

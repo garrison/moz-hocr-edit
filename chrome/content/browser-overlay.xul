@@ -11,6 +11,7 @@
   <popupset>
     <menupopup id="hocr-edit-overlay-menu">
       <menuitem label="&editThisDocument.label;" oncommand="open_hocr_editor_with_current_document();" id="hocr-edit-open-current-document" disabled="true"/>
+      <menuitem label="&editThisImage.label;" oncommand="open_hocr_editor_with_current_image();" id="hocr-edit-open-current-image" disabled="true"/>
       <menuitem label="&launchEditor.label;" hidden="true" oncommand="window.openDialog('chrome://hocr-edit/content/', '', 'chrome,all,dialog=no');"/>
     </menupopup>
   </popupset>

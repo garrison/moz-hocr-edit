@@ -3,11 +3,11 @@ var unwrapped_preview = null;
 var preview = null;
 var preview_window = null;
 var notification_box = null;
+var document_url = null;
+var document_url_exists = true; // if false, user will have to "save as" before saving
 
 const ios = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
 const pref_manager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-
-var document_url = null;
 
 // i18n
 var bundle;
@@ -133,9 +133,17 @@ function go_to_line(i) {
   setTimeout(function () { input_element.focus(); }, 0);
 }
 
+function update_save_button_enabled_status() {
+  var buttons = $("#save-button, #save-copy-button");
+  if (document_url_exists)
+    buttons.show();
+  else
+    buttons.hide();
+}
+
 function load_interface() {
   bundle = document.getElementById("editor-bundle");
-  document_url = preview.baseURI;
+  update_save_button_enabled_status();
 
   // figure out page
   var pages = get_elements_by_class(preview, "ocr_page");
@@ -149,7 +157,7 @@ function load_interface() {
 function load_page_interface(page) {
   // figure out image
   var data = extract_hocr_data(page);
-  var full_image_url = relative_url(data.image, preview.baseURI);
+  var full_image_url = relative_url(data.image, document_url);
   var full_image = $('<div style="position: relative;"><img/></div>')
   full_image[0].firstChild.setAttribute("src", full_image_url);
   var cropped_image_span = $('<span style="display: block; background-repeat: no-repeat;"></span>');
@@ -271,13 +279,19 @@ function save_as(save_copy_only) {
   file_chooser.init(window, _("savingDocument"), nsIFilePicker.modeSave);
   file_chooser.appendFilters(nsIFilePicker.filterHTML);
   file_chooser.appendFilters(nsIFilePicker.filterAll);
-  file_chooser.defaultString = "output" + (is_xhtml() ? ".xhtml" : ".html");
+  file_chooser.defaultString = (save_copy_only ? "Copy of " : "") + document_url.substr(document_url.lastIndexOf('/') + 1);
+  var url = ios.newURI(document_url, null, null);
+  if (url.schemeIs("file"))
+    file_chooser.displayDirectory = url.QueryInterface(Components.interfaces.nsIFileURL).file.parent;
   var status = file_chooser.show();
   if (status != nsIFilePicker.returnCancel) {
     save_notification_wrapper(function () {
       save_file(file_chooser.file);
-      if (!save_copy_only)
+      if (!save_copy_only) {
 	document_url = file_chooser.fileURL.spec;
+	document_url_exists = true;
+	update_save_button_enabled_status();
+      }
     })();
   }
 }
