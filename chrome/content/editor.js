@@ -133,9 +133,11 @@ function paragraph_break_control(currently_same, line1, line2) {
   checkbox.change(function () { // fixme: we are assuming this really changed!!
     // we rely on assumptions about the local document structure, verified
     // where paragraph_break_control is called.
+    // fixme: make a round trip nondestructive
     if (checkbox[0].checked) {
       // create paragraph split
       var new_paragraph = line1.parentNode.cloneNode(false);
+      new_paragraph.id = null;
       line1.parentNode.parentNode.insertBefore(new_paragraph, line1.parentNode.nextSibling);
       var t1 = line2;
       while (t1) {
