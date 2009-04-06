@@ -24,6 +24,7 @@ function Startup() {
     editor.contentWindow.wrappedJSObject.preview_window = preview.contentWindow;
     if (!editor.contentWindow.wrappedJSObject.document_url)
       editor.contentWindow.wrappedJSObject.document_url = preview.contentDocument.baseURI;
+    editor.contentWindow.wrappedJSObject.editor_wrap = document;
     editor.contentWindow.wrappedJSObject.load_interface();
   }
 

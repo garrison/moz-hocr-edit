@@ -5,6 +5,7 @@ var preview_window = null;
 var notification_box = null;
 var document_url = null;
 var document_url_exists = true; // if false, user will have to "save as" before saving
+var editor_wrap = null;
 
 const ios = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
 const pref_manager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
@@ -275,7 +276,7 @@ function load_page_interface(page) {
 
   // fall back to textarea
   if (lines.length == 0) {
-    var textarea = $('<textarea rows="30" cols="120"/>');
+    var textarea = $('<textarea rows="20" cols="80"/>');
     textarea.val(page.innerHTML);
     var textarea_change_func = create_change_func(page, textarea, null, null);
     textarea[0].onkeyup = textarea_change_func;
@@ -283,6 +284,14 @@ function load_page_interface(page) {
     textarea[0].ondrop = textarea_change_func;
     textarea[0].onchange = textarea_change_func;
     $("#document").append(textarea);
+
+    // create a third editor-wrap frame with the image
+    var splitter = evaluateXPath(editor_wrap, "//*[local-name()='splitter']")[0];
+    var new_frame = editor_wrap.createElement('iframe');
+    new_frame.setAttribute("src", full_image_url);
+    new_frame.setAttribute("flex", "2");
+    splitter.parentNode.insertBefore(new_frame, splitter);
+    splitter.parentNode.insertBefore(editor_wrap.createElement('splitter'), new_frame);
   }
 
   // show full image
