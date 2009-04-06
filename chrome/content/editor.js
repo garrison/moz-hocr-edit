@@ -209,10 +209,12 @@ function load_page_interface(page) {
     // UI for editing paragraph breaks if we recognize the local structure
     if (previous_line) {
       var structure_li = $('<li class="structure"></li>');
-      if (line.previousSibling == previous_line) {
+      if (line.previousSibling == previous_line && line.parentNode != page) {
         structure_li.append(paragraph_break_control(true, previous_line, line));
       } else if (!line.previousSibling && !previous_line.nextSibling && line.parentNode.previousSibling == previous_line.parentNode) { // fixme: should check that the parentNode's are the same element type
         structure_li.append(paragraph_break_control(false, previous_line, line));
+      } else {
+	structure_li[0].innerHTML = '<br/>';
       }
       lines_ul.append(structure_li);
     }
