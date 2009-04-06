@@ -127,6 +127,34 @@ function create_change_func(line, input_element, same_word_element, whitespace_s
   };
 }
 
+function paragraph_break_control(currently_same, line1, line2) {
+  var checkbox = $('<input type="checkbox"/>');
+  checkbox[0].checked = !currently_same;
+  checkbox.change(function () { // fixme: we are assuming this really changed!!
+    // we rely on assumptions about the local document structure, verified
+    // where paragraph_break_control is called.
+    if (checkbox[0].checked) {
+      // create paragraph split
+      var new_paragraph = line1.parentNode.cloneNode(false);
+      line1.parentNode.parentNode.insertBefore(new_paragraph, line1.parentNode.nextSibling);
+      var t1 = line2;
+      while (t1) {
+	var t2 = t1.nextSibling;
+	new_paragraph.appendChild(t1);
+	t1 = t2;
+      }
+    } else {
+      // remove paragraph split
+      var deprecated_paragraph = line2.parentNode;
+      while (deprecated_paragraph.firstChild) {
+	line1.parentNode.appendChild(deprecated_paragraph.firstChild);
+      }
+      deprecated_paragraph.parentNode.removeChild(deprecated_paragraph);
+    }
+  });
+  return checkbox;
+}
+
 function go_to_line(i) {
   location.hash = "line" + i;
   var input_element = $("#line" + i + " input:text");
@@ -169,6 +197,7 @@ function load_page_interface(page) {
   $("#document").append(lines_ul);
   for (var i in lines) {
     var line = lines[i];
+    var previous_line = (i == 0) ? null : lines[i - 1];
     var bbox = extract_hocr_data(line).bbox.split(/\s+/, 4);
     var bbox_width = bbox[2] - bbox[0];
     var bbox_height = bbox[3] - bbox[1];
@@ -176,6 +205,17 @@ function load_page_interface(page) {
     if (whitespace_suffix)
       whitespace_suffix = whitespace_suffix[0];
     // fixme: what about text at the end of the span node? (or whitespace prefix in the next element)
+
+    // UI for editing paragraph breaks if we recognize the local structure
+    if (previous_line) {
+      var structure_li = $('<li class="structure"></li>');
+      if (line.previousSibling == previous_line) {
+        structure_li.append(paragraph_break_control(true, previous_line, line));
+      } else if (!line.previousSibling && !previous_line.nextSibling && line.parentNode.previousSibling == previous_line.parentNode) { // fixme: should check that the parentNode's are the same element type
+        structure_li.append(paragraph_break_control(false, previous_line, line));
+      }
+      lines_ul.append(structure_li);
+    }
 
     // create UI control
     var new_same_word = $('<input type="checkbox"/>');
