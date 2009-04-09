@@ -34,7 +34,7 @@ function evaluateXPath(aNode, aExpr) {
 }
 
 function get_elements_by_class(node, class_name) {
-  var elements = evaluateXPath(node, "//*[contains(@class,'" + class_name + "')]");
+  var elements = evaluateXPath(node, ".//*[contains(@class,'" + class_name + "')]");
   var retval = [];
   for (var i in elements) {
     var cls = " " + elements[i].getAttribute("class") + " ";
@@ -176,16 +176,33 @@ function load_interface() {
   bundle = document.getElementById("editor-bundle");
   update_save_button_enabled_status();
 
-  // figure out page
+  // figure out pages
   var pages = get_elements_by_class(preview, "ocr_page");
   if (pages.length == 0) {
-    $("#document").append("<p>This does not appear to be an OCR document.</p>");
+    $("#document_page").append("<p>This does not appear to be an OCR document.</p>");
     return;
   }
+
+  // page control if multiple pages
+  if (pages.length > 1) {
+    var page_control = $("<select></select>");
+    for (var i = 0; i < pages.length; ++i) {
+      var page_option = $("<option></option>");
+      page_option.attr("value", i);
+      page_option.text("Page " + (i + 1));
+      page_control.append(page_option);
+    }
+    page_control.change(function () { load_page_interface(pages[$(this).val()]); });
+    $("#page_control").append(page_control);
+  }
+
+  // load the first page
   load_page_interface(pages[0]);
 }
 
 function load_page_interface(page) {
+  $("#document_page").html("");
+
   // figure out image
   var data = extract_hocr_data(page);
   var full_image_url = relative_url(data.image, document_url);
@@ -197,7 +214,7 @@ function load_page_interface(page) {
   // figure out lines
   var lines = get_elements_by_class(page, "ocr_line");
   var lines_ul = $("<ul></ul>");
-  $("#document").append(lines_ul);
+  $("#document_page").append(lines_ul);
   for (var i in lines) {
     var line = lines[i];
     var previous_line = (i == 0) ? null : lines[i - 1];
@@ -283,7 +300,7 @@ function load_page_interface(page) {
     textarea[0].onkeypress = textarea_change_func;
     textarea[0].ondrop = textarea_change_func;
     textarea[0].onchange = textarea_change_func;
-    $("#document").append(textarea);
+    $("#document_page").append(textarea);
 
     // create a third editor-wrap frame with the image
     var splitter = evaluateXPath(editor_wrap, "//*[local-name()='splitter']")[0];
@@ -295,7 +312,7 @@ function load_page_interface(page) {
   }
 
   // show full image
-  $("#document").append(full_image);
+  $("#document_page").append(full_image);
 }
 
 function save_notification_wrapper(save_func) {

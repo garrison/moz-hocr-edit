@@ -8,8 +8,8 @@
 <head>
 <title>HOCR Editor</title>
 <style type="text/css">
-#document ul { list-style: none; padding-left: 0; }
-#document ul li.structure { margin: 1em 0em; background: url(red.png) repeat-x center center; }
+#document_page ul { list-style: none; padding-left: 0; }
+#document_page ul li.structure { margin: 1em 0em; background: url(red.png) repeat-x center center; }
 </style>
 <script type="application/javascript" src="chrome://hocr-edit/content/jquery.js"/>
 <script type="application/javascript" src="chrome://hocr-edit/content/editor.js"/>
@@ -18,10 +18,12 @@
 </stringbundleset>
 </head>
 <body>
+<div id="page_control" style="float: right;"></div>
 <a id="save-button" href="javascript:save();">&saveButton.label;</a>
 <a id="save-as-button" href="javascript:save_as();">&saveAsButton.label;</a>
 <a id="save-copy-button" href="javascript:save_as(true);">&saveCopyButton.label;</a>
-<div id="document">
+<div style="clear: both;"></div>
+<div id="document_page">
 </div>
 </body>
 </html>
