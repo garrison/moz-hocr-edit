@@ -258,7 +258,7 @@ function load_page_interface(page) {
     new_img_span.width(bbox_width);
     new_img_span.height(bbox_height);
     new_img_span.css("background-position", "-" + bbox[0] + "px -" + bbox[1] + "px");
-    var new_li = $('<li id="line' + i + '"></li>');
+    var new_li = $('<li style="white-space: nowrap;" id="line' + i + '"></li>');
     new_li.append(new_img_span);
     new_li.append("<br/>");
     new_li.append(new_input);
