@@ -98,10 +98,18 @@ function unhighlight() {
   highlighted_element = null;
 }
 
+function resize_to_input_text(input_element) {
+  input_element.attr("size", Math.ceil((input_element.val().length + 1) / 5) * 5);
+}
+
 function create_change_func(line, input_element, same_word_element, whitespace_suffix) {
   if (!whitespace_suffix)
     whitespace_suffix = "\n";
   return function () {
+    // adjust input box size
+    resize_to_input_text(input_element);
+
+    // update preview
     var text = input_element.val();
     if (same_word_element && !same_word_element[0].checked)
       text += whitespace_suffix;
@@ -242,8 +250,9 @@ function load_page_interface(page) {
     // create UI control
     var new_same_word = $('<input type="checkbox"/>');
     new_same_word[0].checked = !whitespace_suffix;
-    var new_input = $('<input size="60"/>');
+    var new_input = $('<input size="5"/>');
     new_input.val(strip(line.innerHTML));
+    resize_to_input_text(new_input);
     var change_func = create_change_func(line, new_input, new_same_word, whitespace_suffix);
     new_same_word.change(change_func);
     new_same_word[0].onblur = unhighlight;
