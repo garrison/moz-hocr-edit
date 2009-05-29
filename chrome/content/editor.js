@@ -215,10 +215,9 @@ function load_page_interface(page) {
   // figure out image
   var data = extract_hocr_data(page);
   var full_image_url = relative_url(data.image, document_url);
-  var full_image = $('<div style="position: relative;"><img/></div>')
+  var full_image = $('<div style="position: relative;"><img id="full_image"/></div>')
+  full_image[0].firstChild.onload = draw_on_canvas_elements;
   full_image[0].firstChild.setAttribute("src", full_image_url);
-  var cropped_image_span = $('<span style="display: block; background-repeat: no-repeat;"></span>');
-  cropped_image_span.css("background-image", "url(" + full_image_url + ")");
 
   // figure out lines
   var lines = get_elements_by_class(page, "ocr_line");
@@ -266,15 +265,15 @@ function load_page_interface(page) {
     function create_onfocus_func(line) { return function () { highlight(line); }; }
     new_input[0].onfocus = new_same_word[0].onfocus = create_onfocus_func(line);
 
-    // crop image
-    var new_img_span = $(cropped_image_span).clone();
-    new_img_span.width(bbox_width);
-    new_img_span.height(bbox_height);
-    new_img_span.css("background-position", "-" + bbox[0] + "px -" + bbox[1] + "px");
+    // create canvas for cropping and scaling image
+    var new_canvas = $('<canvas/>');
+    new_canvas[0].width = bbox_width;
+    new_canvas[0].height = bbox_height;
+    new_canvas[0].hocr_bbox = bbox;
 
     // combine everything into a <li>
     var new_li = $('<li style="white-space: nowrap;" id="line' + i + '"></li>');
-    new_li.append(new_img_span);
+    new_li.append(new_canvas);
     new_li.append("<br/>");
     new_li.append(new_input);
     new_li.append(new_same_word);
@@ -328,6 +327,21 @@ function load_page_interface(page) {
 
   // show full image
   $("#document_page").append(full_image);
+}
+
+function draw_on_canvas_elements() {
+  var scale = 0.5;
+  var image = $('#full_image')[0];
+  $("canvas").each(function () {
+    var bbox = this.hocr_bbox;
+    var bbox_width = bbox[2] - bbox[0];
+    var bbox_height = bbox[3] - bbox[1];
+    this.width = bbox_width * scale;
+    this.height = bbox_height * scale;
+    var new_canvas_ctx = this.getContext('2d');
+    new_canvas_ctx.drawImage(image, bbox[0], bbox[1], bbox_width, bbox_height,
+                             0, 0, this.width, this.height);
+  });
 }
 
 function save_notification_wrapper(save_func) {
