@@ -272,7 +272,7 @@ function load_page_interface(page) {
     new_canvas[0].hocr_bbox = bbox;
 
     // combine everything into a <li>
-    var new_li = $('<li style="white-space: nowrap;" id="line' + i + '"></li>');
+    var new_li = $('<li class="hocr_line" id="line' + i + '"></li>');
     new_li.append(new_canvas);
     new_li.append("<br/>");
     new_li.append(new_input);
