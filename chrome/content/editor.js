@@ -248,7 +248,7 @@ function load_page_interface(page) {
       lines_ul.append(structure_li);
     }
 
-    // create UI control
+    // create UI controls
     var new_same_word = $('<input type="checkbox"/>');
     new_same_word[0].title = _('sameWordTooltip');
     new_same_word[0].checked = !whitespace_suffix;
@@ -265,10 +265,14 @@ function load_page_interface(page) {
     new_input[0].onblur = unhighlight;
     function create_onfocus_func(line) { return function () { highlight(line); }; }
     new_input[0].onfocus = new_same_word[0].onfocus = create_onfocus_func(line);
+
+    // crop image
     var new_img_span = $(cropped_image_span).clone();
     new_img_span.width(bbox_width);
     new_img_span.height(bbox_height);
     new_img_span.css("background-position", "-" + bbox[0] + "px -" + bbox[1] + "px");
+
+    // combine everything into a <li>
     var new_li = $('<li style="white-space: nowrap;" id="line' + i + '"></li>');
     new_li.append(new_img_span);
     new_li.append("<br/>");
