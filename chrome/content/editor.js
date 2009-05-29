@@ -138,6 +138,7 @@ function create_change_func(line, input_element, same_word_element, whitespace_s
 
 function paragraph_break_control(currently_same, line1, line2) {
   var checkbox = $('<input type="checkbox"/>');
+  checkbox[0].title = _('paragraphBreakTooltip');
   checkbox[0].checked = !currently_same;
   checkbox.change(function () { // fixme: we are assuming this really changed!!
     // we rely on assumptions about the local document structure, verified
@@ -249,6 +250,7 @@ function load_page_interface(page) {
 
     // create UI control
     var new_same_word = $('<input type="checkbox"/>');
+    new_same_word[0].title = _('sameWordTooltip');
     new_same_word[0].checked = !whitespace_suffix;
     var new_input = $('<input size="5"/>');
     new_input.val(strip(line.innerHTML));
