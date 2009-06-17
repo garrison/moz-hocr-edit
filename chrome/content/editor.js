@@ -6,9 +6,12 @@ var notification_box = null;
 var document_url = null;
 var document_url_exists = true; // if false, user will have to "save as" before saving
 var editor_wrap = null;
+// end of variables set by editor-wrap.js
 
 const ios = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
 const pref_manager = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+
+var scale = 0.5; // ratio at which to scale images
 
 // i18n
 var bundle;
@@ -303,8 +306,8 @@ function load_page_interface(page) {
 
     // create canvas for cropping and scaling image
     var new_canvas = $('<canvas/>');
-    new_canvas[0].width = bbox_width;
-    new_canvas[0].height = bbox_height;
+    new_canvas[0].width = bbox_width * scale;
+    new_canvas[0].height = bbox_height * scale;
     new_canvas[0].hocr_bbox = bbox;
 
     // combine everything into a <li>
@@ -351,7 +354,6 @@ function load_page_interface(page) {
 }
 
 function draw_on_canvas_elements() {
-  var scale = 0.5;
   var image = $('#full_image')[0];
   $("canvas").each(function () {
     var bbox = this.hocr_bbox;
