@@ -181,6 +181,40 @@ function update_save_button_enabled_status() {
     buttons.hide();
 }
 
+var most_recent_selection_range = null;
+
+function handle_preview_selection() {
+  // if a user selects part of the preview, have the editing interface jump to that location
+
+  var sel = preview_window.getSelection()
+  if (sel.isCollapsed || sel.getRangeAt(0) == most_recent_selection_range)
+    return;
+
+  most_recent_selection_range = sel.getRangeAt(0);
+
+  var pages = get_elements_by_class(preview, "ocr_page");
+  for (var i in pages) {
+    if (sel.containsNode(pages[i], true)) {
+      $("#page_control select").each(function () {
+        if (this.selectedIndex != i) {
+          this.selectedIndex = i;
+          $(this).change();
+        }
+      });
+
+      var lines = get_elements_by_class(pages[i], "ocr_line");
+      for (var j in lines) {
+        if (sel.containsNode(lines[j], true)) {
+          go_to_line(j);
+          break;
+        }
+      }
+
+      break;
+    }
+  }
+}
+
 function load_interface() {
   bundle = document.getElementById("editor-bundle");
   update_save_button_enabled_status();
@@ -204,6 +238,8 @@ function load_interface() {
     page_control.change(function () { load_page_interface(pages[$(this).val()]); });
     $("#page_control").append(page_control);
   }
+
+  preview_window.addEventListener('mouseup', handle_preview_selection, false);
 
   // load the first page
   load_page_interface(pages[0]);
@@ -289,21 +325,6 @@ function load_page_interface(page) {
     overlay_span[0].onmouseout = unhighlight;
     full_image.append(overlay_span);
   }
-
-  // selection handling
-  function handle_preview_selection() {
-    var sel = preview_window.getSelection()
-    if (!sel.isCollapsed) {
-      for (var i in lines) {
-	if (sel.containsNode(lines[i], true)) {
-	  go_to_line(i);
-	  break;
-	}
-      }
-    }
-  }
-  if (lines.length > 0)
-    preview_window.addEventListener('mouseup', handle_preview_selection, false);
 
   // fall back to textarea
   if (lines.length == 0) {
