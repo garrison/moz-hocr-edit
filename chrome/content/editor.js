@@ -310,6 +310,21 @@ function load_page_interface(page) {
     new_canvas[0].height = bbox_height * scale;
     new_canvas[0].hocr_bbox = bbox;
 
+    // make canvas clickable
+    function create_canvas_onclick_func(line, new_input) {
+      return function () {
+        var offset = 0, offset_elt = line;
+        while (offset_elt) {
+          offset += offset_elt.offsetTop;
+          offset_elt = offset_elt.offsetParent;
+        }
+        offset -= (preview_window.innerHeight - $(line).height()) / 2;
+        preview_window.scrollTo($(preview_window).scrollLeft(), offset);
+        new_input.focus()
+      };
+    }
+    new_canvas[0].onclick = create_canvas_onclick_func(line, new_input);
+
     // combine everything into a <li>
     var new_li = $('<li class="hocr_line" id="line' + i + '"></li>');
     new_li.append(new_canvas);
