@@ -434,9 +434,22 @@ function save_as(save_copy_only) {
 }
 
 function save_file(file) {
-  var output_stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-  output_stream.init(file, -1, -1, null);
+  var output_stream = safe_file_output_stream(file);
   serialize_current_document(output_stream);
+}
+
+function safe_file_output_stream(file) {
+  var output_stream = Components.classes["@mozilla.org/network/safe-file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+  output_stream.init(file, -1, -1, null);
+  output_stream = output_stream.QueryInterface(Components.interfaces.nsISafeOutputStream);
+  var stream = {
+    // we want close() to instead call finish() so the file is safely written
+    // to disk.
+    write: function (data, length) { return output_stream.write(data, length); },
+    flush: function () { return output_stream.flush(); },
+    close: function () { return output_stream.finish(); }
+  };
+  return stream;
 }
 
 function save_to_http(url) { // or https, of course
