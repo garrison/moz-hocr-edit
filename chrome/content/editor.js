@@ -235,7 +235,7 @@ function load_interface() {
     for (var i = 0; i < pages.length; ++i) {
       var page_option = $("<option></option>");
       page_option.attr("value", i);
-      page_option.text("Page " + (i + 1));
+      page_option.text(_('pageN').replace("%d", "" + (i + 1)));
       page_control.append(page_option);
     }
     page_control.change(function () { load_page_interface(pages[$(this).val()]); });
