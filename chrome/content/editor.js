@@ -453,7 +453,7 @@ function safe_file_output_stream(file) {
 }
 
 function save_to_http(url) { // or https, of course
-  xhr = new XMLHttpRequest();
+  var xhr = new XMLHttpRequest();
   xhr.open("PUT", url.spec, false);
   xhr.setRequestHeader("Content-type", (is_xhtml() ? "application/xhtml+xml" : "text/html"));
   function serialized_cb(buffer) {
