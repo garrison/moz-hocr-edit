@@ -25,15 +25,15 @@ EditHOCRProtocolHandler.prototype = {
   },
 
   newURI: function(spec, charset, baseURI) {
-    var uri = Components.classes["@mozilla.org/network/simple-uri;1"]
-		.createInstance(Components.interfaces.nsIURI);
+    var uri = Components.classes["@mozilla.org/network/simple-uri;1"].
+		createInstance(Components.interfaces.nsIURI);
     uri.spec = spec;
     return uri;
   },
 
   newChannel: function (uri) {
-    var ios = Components.classes["@mozilla.org/network/io-service;1"]
-		.getService(Components.interfaces.nsIIOService);
+    var ios = Components.classes["@mozilla.org/network/io-service;1"].
+		getService(Components.interfaces.nsIIOService);
 
     // make sure it is an acceptable uri scheme
     var colon_index = uri.asciiSpec.indexOf(":");
