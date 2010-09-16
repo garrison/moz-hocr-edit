@@ -2,3 +2,6 @@ content hocr-edit chrome/content/
 overlay chrome://browser/content/browser.xul chrome://hocr-edit/content/browser-overlay.xul
 
 locale hocr-edit en-US chrome/locale/en-US/
+
+component {66124ee4-0939-11de-9057-00e04cf8693a} components/handler.js
+contract @mozilla.org/network/protocol;1?name=hocr-edit {66124ee4-0939-11de-9057-00e04cf8693a}

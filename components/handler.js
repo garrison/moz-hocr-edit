@@ -54,6 +54,10 @@ EditHOCRProtocolHandler.prototype = {
   }
 };
 
-function NSGetModule(compMgr, fileSpec) {
-  return XPCOMUtils.generateModule([EditHOCRProtocolHandler]);
+// XPCOMUtils.generateNSGetFactory was introduced in Mozilla 2 (Firefox 4),
+// but we provide backwards compatibility for older versions
+if (XPCOMUtils.generateNSGetFactory) {
+  const NSGetFactory = XPCOMUtils.generateNSGetFactory([EditHOCRProtocolHandler]);
+} else {
+  var NSGetModule = XPCOMUtils.generateNSGetModule([EditHOCRProtocolHandler]);
 }
