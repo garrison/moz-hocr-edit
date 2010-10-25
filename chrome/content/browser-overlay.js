@@ -1,5 +1,9 @@
 var hocr_edit = function () {
 
+  const kWindowMediatorContractID = "@mozilla.org/appshell/window-mediator;1";
+  const kWindowMediatorIID = Components.interfaces.nsIWindowMediator;
+  const kWindowMediator = Components.classes[kWindowMediatorContractID].getService(kWindowMediatorIID);
+
   function is_hocr_document(doc) {
     // determine if there's an element with class "ocr_page"
     var xpe = new XPathEvaluator();
@@ -20,9 +24,10 @@ var hocr_edit = function () {
     },
 
     open_with_current_document: function () {
-      var browser = top.document.getElementById("content");
+      var browserWindow = kWindowMediator.getMostRecentWindow("navigator:browser");
+      var browser = browserWindow.getBrowser();
       var url = 'hocr-edit:' + window.content.document.baseURI;
-      browser.loadOneTab(url, null, null, null, false, false);
+      browser.selectedTab = browser.addTab(url);
     },
 
     open_with_current_image: function () {
