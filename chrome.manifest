@@ -1,5 +1,6 @@
 content hocr-edit chrome/content/
 overlay chrome://browser/content/browser.xul chrome://hocr-edit/content/browser-overlay.xul
+overlay chrome://browser/content/navigator.xul chrome://hocr-edit/content/browser-overlay.xul
 
 locale hocr-edit en-US chrome/locale/en-US/
 
