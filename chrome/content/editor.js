@@ -253,7 +253,9 @@ function load_page_interface(page) {
 
   // figure out image
   var data = extract_hocr_data(page);
-  var full_image_url = relative_url(data.image, document_url);
+  var relative_image_url = data.image;
+  relative_image_url = relative_image_url.replace(/^"/, "").replace(/"$/, ""); // tesseract likes to wrap the image url in quotes
+  var full_image_url = relative_url(relative_image_url, document_url);
   var full_image = $('<div style="position: relative;"><img id="full_image"/></div>')
   full_image[0].firstChild.onload = draw_on_canvas_elements;
   full_image[0].firstChild.setAttribute("src", full_image_url);
