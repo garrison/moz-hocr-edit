@@ -222,6 +222,14 @@ function load_interface() {
   bundle = document.getElementById("editor-bundle");
   update_save_button_enabled_status();
 
+  // remove word-level OCR information if it exists
+  // (see tesseract #492 for why we remove 'xocr_word')
+  $.each(['ocrx_word', 'xocr_word', 'ocr_word'], function (i, ocr_word_class) {
+    $.each(get_elements_by_class(preview, ocr_word_class), function (i, v) {
+      $(v).replaceWith(v.childNodes);
+    });
+  });
+
   // figure out pages
   var pages = get_elements_by_class(preview, "ocr_page");
   if (pages.length == 0) {
